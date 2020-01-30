@@ -1,17 +1,14 @@
 require(ijtiff)
-require(pbapply)
-require(parallel)
 
-setwd('/hpc/shared/sign/mpages/mito_track')
-video_files_names <- sapply(strsplit(list.files('dat'), '.', fixed = T),'[', 1)
+video_files_names <- sapply(strsplit(list.files('data/rawdata'), '.', fixed = T),'[', 1)
 
 
 process_mito_track <- function(video_name) {
 
   
   print(paste0('Processing: ', video_name))
-  data_dir <- paste0('dots/', video_name)
-  tiff_file <- ijtiff::read_tif(path = paste0('dat/', video_name, '.tif'))
+  data_dir <- paste0('data/processed/', video_name)
+  tiff_file <- ijtiff::read_tif(path = paste0('data/rawdata/', video_name, '.tif'))
   
   x_max <- dim(tiff_file)[2]
   y_max <- dim(tiff_file)[1]
@@ -75,7 +72,7 @@ process_mito_track <- function(video_name) {
     
   }
   
-  mem_coords <- pblapply(frames_mat, membrane_coords)
+  mem_coords <- lapply(frames_mat, membrane_coords)
   
   temp_list <- list()
   for (i in seq_along(mem_coords)) {
@@ -86,7 +83,7 @@ process_mito_track <- function(video_name) {
     
   }
   mem_df <- do.call('rbind', temp_list)
-  write.csv(mem_df, file = paste0('out/membrane/', video_name, '.csv'))
+  write.csv(mem_df, file = paste0('data/processed/membrane_', video_name, '.csv'))
   
   print(paste0('Number of membrane coordinates: ' , length(mem_coords[[1]])))
   
@@ -106,14 +103,14 @@ process_mito_track <- function(video_name) {
   for (i in seq_along(list.files(data_dir))) {
     if (i == 1) {
       temp_list <- list()
-      file_name <- paste0(data_dir, '/', 'new_', i, '.csv')
+      file_name <- paste0(data_dir, '/', 'points_', i, '.csv')
       new <- read.csv(file = file_name, 
                       header = FALSE, 
                       col.names = c('x', 'y'))
       new$keep <- 1
       ghost_ids <- c()
     } else {
-      file_name <- paste0(data_dir, '/', 'new_', i, '.csv')
+      file_name <- paste0(data_dir, '/', 'points_', i, '.csv')
       new <- read.csv(file = file_name, 
                       header = FALSE, 
                       col.names = c('x', 'y', 'keep'))
@@ -213,8 +210,9 @@ process_mito_track <- function(video_name) {
     
   }
   
-  write.csv(trace_df, file = paste0('out/tracking/', video_name, '.csv'))
+  write.csv(trace_df, file = paste0('data/processed/', video_name, '.csv'))
   
 }
 
-mclapply(video_files_names, process_mito_track, mc.cores = 16)
+process_mito_track(video_files_names)
+
