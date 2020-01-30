@@ -13,7 +13,7 @@ There are three scripts:
     - `open-cv` = `4.1.2.30`
     - `numpy` = `1.17.4`
     - `tiffcapture` = `0.1.6`
-- `R`
+- `R` = `3.6.1`
     - `ijtiff` = `2.0.4`
     - `ggplot2` = `3.2.1`
     - `RColorBrewer` = `1.1`
