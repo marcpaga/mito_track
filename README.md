@@ -1,5 +1,7 @@
 # Mitochondria tracking
 
+[![DOI](https://zenodo.org/badge/237180210.svg)](https://zenodo.org/badge/latestdoi/237180210)
+
 This repository contains the code used for the analysis of mitochondrial flow in *Caenorhabditis elegans* one cell embryos. 
 
 There are four scripts:
